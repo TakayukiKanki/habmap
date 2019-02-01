@@ -7,8 +7,7 @@ program main
   integer, allocatable:: vertice_index_0(:)
   integer, allocatable:: vertice_index_1(:)
   integer, allocatable:: vertice_index_2(:)
-
-
+  integer, allocatable:: vertice_index_3(:)
 
   integer:: faces_n, vertice_n
   integer:: i,j
@@ -27,7 +26,8 @@ program main
   allocate(extract_vertice(faces_n,3))
   allocate(vertice_index_0(vertice_n))
   allocate(vertice_index_1(vertice_n))
-
+  allocate(vertice_index_2(vertice_n))
+  allocate(vertice_index_3(vertice_n))
   !faceの読み込みと格納
   open(fa_file, file='faces_dataset.csv')
   read(fa_file, *) ((faces_matrix(i,j), j=1,3),i=1,faces_n)
@@ -66,7 +66,14 @@ program main
       endif
     enddo
   enddo
-
+  !ループ3の点インデックスリストを取得
+  vertice_index_3 = get_neighbor3_index(i, faces_matrix, vertice_matrix, faces_n, vertice_n)
+  do j=1, vertice_n
+    if(vertice_index_3(j)==1)then
+      write(*,*) i,3,j
+    endif
+  enddo
+enddo
 
 
   !配列の割り当て終了
@@ -75,6 +82,7 @@ program main
   deallocate(vertice_index_0)
   deallocate(vertice_index_1)
   deallocate(vertice_index_2)
+  deallocate(vertice_index_3)
 
   !計算時間計測
   call cpu_time(t2)
