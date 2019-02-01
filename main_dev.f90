@@ -48,32 +48,31 @@ program main
     vertice_index_0 = get_neighbor0_index(i, faces_matrix, faces_n, vertice_n)
     do j=1, vertice_n
       if (vertice_index_0(j)==1)then
-        write(*,*) i,0,j
+        !write(*,*) i,0,j
       endif
     enddo
     !ループ1の点インデックスリストを取得
     vertice_index_1 = get_neighbor1_index(i, faces_matrix, vertice_matrix, faces_n, vertice_n)
     do j=1, vertice_n
       if(vertice_index_1(j)==1)then
-        write(*,*) i,1,j
+        !write(*,*) i,1,j
       endif
     enddo
     !ループ2の点インデックスリストを取得
     vertice_index_2 = get_neighbor2_index(i, faces_matrix, vertice_matrix, faces_n, vertice_n)
     do j=1, vertice_n
       if(vertice_index_2(j)==1)then
-        write(*,*) i,2,j
+        !write(*,*) i,2,j
+      endif
+    enddo
+    !ループ3の点インデックスリストを取得
+    vertice_index_3 = get_neighbor3_index(i, faces_matrix, vertice_matrix, faces_n, vertice_n)
+    do j=1, vertice_n
+      if(vertice_index_3(j)==1)then
+        !write(*,*) i,3,j
       endif
     enddo
   enddo
-  !ループ3の点インデックスリストを取得
-  vertice_index_3 = get_neighbor3_index(i, faces_matrix, vertice_matrix, faces_n, vertice_n)
-  do j=1, vertice_n
-    if(vertice_index_3(j)==1)then
-      write(*,*) i,3,j
-    endif
-  enddo
-enddo
 
 
   !配列の割り当て終了
