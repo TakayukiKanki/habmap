@@ -1,6 +1,6 @@
 program main
   use get_neighbor
-  !use calc_terrain_vals
+  use calc_variables
   implicit none
   real(8),allocatable:: vertice_matrix(:,:),  extract_vertice(:,:)
   integer,allocatable:: faces_matrix(:,:)
@@ -12,6 +12,7 @@ program main
   integer:: faces_n, vertice_n
   integer:: i,j
   integer:: pr_file=10, fa_file=11, ve_file=12
+  real(8),allocatable:: bathy0f(:), bathy1f(:), bathy2f(:), bathy3f(:)
   real(8) t1,t2
   call cpu_time(t1)
 
@@ -28,6 +29,16 @@ program main
   allocate(vertice_index_1(vertice_n))
   allocate(vertice_index_2(vertice_n))
   allocate(vertice_index_3(vertice_n))
+  allocate(bathy0f(faces_n))
+  allocate(bathy1f(faces_n))
+  allocate(bathy2f(faces_n))
+  allocate(bathy3f(faces_n))
+
+
+
+
+
+
   !faceの読み込みと格納
   open(fa_file, file='faces_dataset.csv')
   read(fa_file, *) ((faces_matrix(i,j), j=1,3),i=1,faces_n)
@@ -44,6 +55,7 @@ program main
 
   !do i =1, 3 !お試しイテレート
   do i = 1, faces_n
+
     !ループ0の点インデックスリストを取得
     vertice_index_0 = get_neighbor0_index(i, faces_matrix, faces_n, vertice_n)
     do j=1, vertice_n
@@ -51,6 +63,8 @@ program main
         !write(*,*) i,0,j
       endif
     enddo
+    bathy0f(i)=calc_bathy(vertice_index_0, vertice_matrix, vertice_n)
+
     !ループ1の点インデックスリストを取得
     vertice_index_1 = get_neighbor1_index(i, faces_matrix, vertice_matrix, faces_n, vertice_n)
     do j=1, vertice_n
@@ -58,6 +72,8 @@ program main
         !write(*,*) i,1,j
       endif
     enddo
+    bathy1f(i)=calc_bathy(vertice_index_1, vertice_matrix, vertice_n)
+
     !ループ2の点インデックスリストを取得
     vertice_index_2 = get_neighbor2_index(i, faces_matrix, vertice_matrix, faces_n, vertice_n)
     do j=1, vertice_n
@@ -65,6 +81,8 @@ program main
         !write(*,*) i,2,j
       endif
     enddo
+    bathy2f(i)=calc_bathy(vertice_index_2, vertice_matrix, vertice_n)
+
     !ループ3の点インデックスリストを取得
     vertice_index_3 = get_neighbor3_index(i, faces_matrix, vertice_matrix, faces_n, vertice_n)
     do j=1, vertice_n
@@ -72,6 +90,8 @@ program main
         !write(*,*) i,3,j
       endif
     enddo
+    bathy3f(i)=calc_bathy(vertice_index_3, vertice_matrix, vertice_n)
+
   enddo
 
 
@@ -82,6 +102,10 @@ program main
   deallocate(vertice_index_1)
   deallocate(vertice_index_2)
   deallocate(vertice_index_3)
+  deallocate(bathy0f)
+  deallocate(bathy1f)
+  deallocate(bathy2f)
+  deallocate(bathy3f)
 
   !計算時間計測
   call cpu_time(t2)
