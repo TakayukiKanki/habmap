@@ -7,11 +7,11 @@ program main
   integer,allocatable:: faces_matrix(:,:)
   integer, allocatable:: vertice_index_0(:), vertice_index_1(:), vertice_index_2(:), vertice_index_3(:)
   integer, allocatable:: vertice_index(:,:)
-  integer::loop_k=4
+  integer::k_loop=4
 
   integer:: faces_n, vertice_n
   integer:: i,j
-  integer:: pr_file=10, fa_file=11, ve_file=12
+  integer:: pr_file=10, fa_file=11, ve_file=12, nor_file=13
   real(8),allocatable:: bathy0f(:), bathy1f(:), bathy2f(:), bathy3f(:)
   real(8),allocatable:: ori_x0f(:), ori_x1f(:), ori_x2f(:), ori_x3f(:)
   real(8),allocatable:: ori_y0f(:), ori_y1f(:), ori_y2f(:), ori_y3f(:)
@@ -52,10 +52,13 @@ program main
   !verticeの読み込みと格納
   open(ve_file, file='vertice_dataset.csv')
   read(ve_file, *) ((vertice_matrix(i,j), j=1,3),i=1, vertice_n)
-  read(ve_file, *) ((vertice_normal(i,j), j=4,6),i=1, vertice_n)
+  close(ve_file)
+
+  open(nor_file, file='vertice_normal.csv')
+  read(nor_file, *) ((vertice_normal(i,j), j=1,3),i=1, vertice_n)
   !verticeを配列で読み込めたか確認
   !write(*,*) vertice_matrix(1,1:3)
-  close(ve_file)
+  close(nor_file)
 
 
 
@@ -70,8 +73,8 @@ program main
       endif
     enddo
     bathy0f(i)=calc_bathy(vertice_index_0, vertice_matrix, vertice_n)
-    ori_x0f(i)=calc_orix(vertice_index_0, vertice_vector, vertice_n)
-    ori_y0f(i)=calc_oriy(vertice_index_0, vertice_vector, vertice_n)
+    ori_x0f(i)=calc_orix(vertice_index_0, vertice_normal, vertice_n)
+    ori_y0f(i)=calc_oriy(vertice_index_0, vertice_normal, vertice_n)
 
     !ループ1の点インデックスリストを取得
     vertice_index_1 = get_neighbor1_index(i, faces_matrix, vertice_matrix, faces_n, vertice_n)
@@ -105,6 +108,7 @@ program main
   open (18, file='mydata.csv', status='replace')
   do i = 1, faces_n
       write (18, *) bathy0f(i), ',', bathy1f(i), ',', bathy2f(i), ',', bathy3f(i)
+      !write (18, *) ori_x0f(i), ',', ori_y0f(i)
   end do
   close (18)
 
