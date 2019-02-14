@@ -11,7 +11,7 @@ contains
 
     z=0.0d0
     count=0
-    bathy=0
+    bathy=0.0d0
     do i=1, vertice_n
       if(vertice_index(i)==1)then
         z=z+vertice_matrix(i,3)
@@ -30,7 +30,7 @@ contains
     integer::count
     x=0.0d0
     count=0
-    ori_x=0
+    ori_x=0.0d0
     do i=1, vertice_n
       if(vertice_index(i)==1)then
         x=x+vertice_vector(i,1)
@@ -49,7 +49,7 @@ contains
     integer::count
     y=0.0d0
     count=0
-    ori_y=0
+    ori_y=0.0d0
     do i=1, vertice_n
       if(vertice_index(i)==1)then
         y=y+vertice_vector(i,2)
@@ -92,11 +92,12 @@ contains
     integer vertice_n
     integer, intent(in)::vertice_index(vertice_n)
     real(8), intent(in)::vertice_vector(vertice_n,3)
+    real,parameter :: pi = 3.1415927
     integer::count, i, j
     real(8)::sum_vec(3), slopeness
     count=0
     sum_vec=(/0.0d0, 0.0d0, 0.0d0/)
-    !法線ベクトルを合成する
+    !法線ベクトルを合成して平均する
     do i =1, vertice_n
       if(vertice_index(i)==1)then
         count=count+1
@@ -105,11 +106,13 @@ contains
         enddo
       endif
     enddo
-
     sum_vec=sum_vec/count
     !法線ベクトルからz軸基準の角度に直すよ
 
-    slopeness=0.0d0
+    slopeness=atan(sum_vec(3)/sqrt(sum_vec(1)**2+sum_vec(2)**2))/pi*2*90
+    if(slopeness>=0)then
+      slopeness=90+abs(slopeness)
+    endif
   end function calc_slopeness
 
 end module calc_variables

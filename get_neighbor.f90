@@ -282,7 +282,9 @@ contains
     !ループ0の探索
     do i=1, 3
       k=faces_matrix(face_index,i)
-      vertice_index(k,1)=1
+      !vertice_index(k,1)=1
+      !例えばkが12なら，13番目の点インデックスをチェックする．
+      vertice_index(k+1,1)=1
     enddo
 
     !ループ1の探索
@@ -300,13 +302,13 @@ contains
     do i=1, faces_n
       if(faces_index(i,2)==1)then
         do j=1, 3
-          vertice_index(faces_matrix(i,j),2)=1
+          vertice_index(faces_matrix(i,j)+1,2)=1
         enddo
       endif
     enddo
 
     !ループkの探索
-    do loop = 2, loop_k+1
+    do loop = 2, loop_k
       do i=1, vertice_n
         if(vertice_index(i,loop)==1)then
           do j=1, faces_n
@@ -318,15 +320,14 @@ contains
           enddo
         endif
       enddo
+      do i=1, faces_n
+        if(faces_index(i,loop+1)==1)then
+          do j=1, 3
+            !plyファイルでは点インデックスがゼロスタート！
+            vertice_index(faces_matrix(i,j)+1,loop+1)=1
+          enddo
+        endif
+      enddo
     enddo
-
-    do i=1, faces_n
-      if(faces_index(i,loop)==1)then
-        do j=1, 3
-          vertice_index(faces_matrix(i,j),loop+1)=1
-        enddo
-      endif
-    enddo
-
   end function get_neighbork_index
 end module get_neighbor
